@@ -26,3 +26,12 @@ jobs:
             echo "Run: npm run generate && commit the result."
             exit 1
           fi
+      - name: Regenerate Chinese README
+        run: npm run generate:zh
+      - name: Fail if zh/README.md is out of sync
+        run: |
+          if ! git diff --exit-code -- zh/README.md; then
+            echo "zh/README.md is out of sync with zh/dictionary/, internal/Curriculum.zh.md, or internal/README.zh.template.md."
+            echo "Run: npm run generate:zh && commit the result."
+            exit 1
+          fi

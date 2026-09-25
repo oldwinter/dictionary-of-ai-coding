@@ -16,6 +16,8 @@
 
 # AI Coding Dictionary
 
+**中文版：** [zh/README.md](./zh/README.md)
+
 **AI coding can feel like it's just for experts**. Unexplained jargon. Mysterious failures. Bills that don't seem to match the work.
 
 It isn't, really. A lot of the confusion is manufactured: **there's a whole VC-funded economy that benefits from keeping it hard to understand**.

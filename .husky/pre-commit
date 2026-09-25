@@ -1,3 +1,4 @@
 npx lint-staged
 npm run generate
-git add README.md
+npm run generate:zh
+git add README.md zh/README.md

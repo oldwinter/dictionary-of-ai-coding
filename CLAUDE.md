@@ -1,5 +1,7 @@
 README.md is a generated file, generated via internal/README.template.md.
 
+The Chinese edition is also generated. Edit `zh/dictionary/*.md`, `internal/Curriculum.zh.md`, and `internal/README.zh.template.md`, then run `npm run generate:zh`. Keep entry titles and technical terms in English. `zh/README.md` is generated. Do not edit it by hand.
+
 Links to other entries should only have a link on the first occurrence. I.e. if session appears twice in the entry, only the first should have an outward link.
 
 New entries must be added to dictionary/, and found a place in internal/Curriculum.md

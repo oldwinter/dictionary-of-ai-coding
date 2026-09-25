@@ -1,5 +1,6 @@
 #!/usr/bin/env -S npx tsx
-// Generate README.md from internal/Curriculum.md + dictionary/*.md + internal/README.template.md.
+// Generate a README from a curriculum, dictionary entries, and a template.
+// Default: English README.md. Pass --zh for zh/README.md.
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -7,10 +8,17 @@ import { dirname, join } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = dirname(HERE);
-const CURRICULUM = join(HERE, "Curriculum.md");
-const TEMPLATE = join(HERE, "README.template.md");
-const DICT_DIR = join(ROOT, "dictionary");
-const OUTPUT = join(ROOT, "README.md");
+const zh = process.argv.includes("--zh");
+const curriculumFile = zh ? "Curriculum.zh.md" : "Curriculum.md";
+const templateFile = zh ? "README.zh.template.md" : "README.template.md";
+const CURRICULUM = join(HERE, curriculumFile);
+const TEMPLATE = join(HERE, templateFile);
+const DICT_DIR = join(ROOT, zh ? "zh/dictionary" : "dictionary");
+const OUTPUT = join(ROOT, zh ? "zh/README.md" : "README.md");
+const curriculumLabel = zh
+  ? "internal/Curriculum.zh.md"
+  : "internal/Curriculum.md";
+const dictLabel = zh ? "zh/dictionary" : "dictionary";
 const MARKER = "<!-- CURRICULUM -->";
 const TOC_MARKER = "<!-- TOC -->";
 
@@ -46,7 +54,7 @@ function parseCurriculum(text: string): Section[] {
     if (line.startsWith("## ")) {
       if (!SECTION_RE.test(line)) {
         fail(
-          `Curriculum.md:${lineNo}: section heading must match "## Section N — Title" (em-dash required): ${line}`
+          `${curriculumLabel}:${lineNo}: section heading must match "## Section N — Title" (em-dash required): ${line}`
         );
       }
       current = { heading: line.slice(3), terms: [] };
@@ -56,23 +64,23 @@ function parseCurriculum(text: string): Section[] {
 
     if (line.startsWith("- ")) {
       if (!current)
-        fail(`Curriculum.md:${lineNo}: bullet before any section heading`);
+        fail(`${curriculumLabel}:${lineNo}: bullet before any section heading`);
       const m = line.match(BULLET_RE);
       if (!m || !m[1])
-        fail(`Curriculum.md:${lineNo}: malformed bullet: ${line}`);
+        fail(`${curriculumLabel}:${lineNo}: malformed bullet: ${line}`);
       const term = m[1];
       if (term.trim() !== term)
-        fail(`Curriculum.md:${lineNo}: term has surrounding whitespace`);
+        fail(`${curriculumLabel}:${lineNo}: term has surrounding whitespace`);
       if (/[*_`\[]/.test(term))
         fail(
-          `Curriculum.md:${lineNo}: term must be plain text, no markdown: ${term}`
+          `${curriculumLabel}:${lineNo}: term must be plain text, no markdown: ${term}`
         );
       current.terms.push(term);
       return;
     }
 
     fail(
-      `Curriculum.md:${lineNo}: only "## Section N — Title" headings and "- Term" bullets are allowed: ${line}`
+      `${curriculumLabel}:${lineNo}: only "## Section N — Title" headings and "- Term" bullets are allowed: ${line}`
     );
   });
 
@@ -105,7 +113,7 @@ function main(): void {
   for (const section of sections) {
     parts.push(`## ${section.heading}`, "");
     for (const term of section.terms) {
-      if (seen.has(term)) fail(`Curriculum.md: duplicate term "${term}"`);
+      if (seen.has(term)) fail(`${curriculumLabel}: duplicate term "${term}"`);
       seen.add(term);
       const entryPath = join(DICT_DIR, `${term}.md`);
       let body: string;
@@ -113,7 +121,7 @@ function main(): void {
         body = readFileSync(entryPath, "utf8");
       } catch {
         fail(
-          `Curriculum.md references "${term}" but ${entryPath} does not exist`
+          `${curriculumLabel} references "${term}" but ${entryPath} does not exist`
         );
       }
       parts.push(
@@ -133,7 +141,7 @@ function main(): void {
   const orphans = [...onDisk].filter((t) => !seen.has(t)).sort();
   if (orphans.length)
     fail(
-      `dictionary/ entries not referenced by Curriculum.md: ${orphans.join(", ")}`
+      `${dictLabel}/ entries not referenced by ${curriculumLabel}: ${orphans.join(", ")}`
     );
 
   const block = parts.join("\n").trimEnd() + "\n";
@@ -152,11 +160,15 @@ function main(): void {
       ].join("\n");
     })
     .join("\n\n");
+  const sourceLine = zh
+    ? "zh/dictionary/*.md, internal/Curriculum.zh.md, internal/README.zh.template.md"
+    : "dictionary/*.md, internal/Curriculum.md, internal/README.template.md";
+  const regenLine = zh ? "npm run generate:zh" : "npm run generate";
   const banner =
     "<!--\n" +
     "  GENERATED FILE — DO NOT EDIT.\n" +
-    "  Source: dictionary/*.md, internal/Curriculum.md, internal/README.template.md\n" +
-    "  Regenerate: npm run generate\n" +
+    `  Source: ${sourceLine}\n` +
+    `  Regenerate: ${regenLine}\n` +
     "-->\n\n";
   writeFileSync(
     OUTPUT,
