@@ -396,6 +396,8 @@ Everything the model writes counts: the prose you read, the code it emits, [tool
 
 Output tokens also set the pace of a [session](#session). The model reads input quickly but generates output one token at a time, so when a [turn](#turn) feels slow, it's almost always the output being written, not the input being read. A long wait usually means a long answer is coming.
 
+Control output volume at the request boundary. Ask for a patch instead of a rewritten file, a short diagnosis before an implementation, or a compact result when the reasoning does not need to be shown. These constraints reduce cost and latency without removing information the next step actually needs.
+
 _Usage:_
 
 "The refactor session is burning through credit even though the inputs are small."
@@ -863,6 +865,8 @@ The date past which a [model](#model) has no [parametric knowledge](#parametric-
 The cutoff exists because of how models are made: [training](#training) bakes a snapshot of text into the model's [parameters](#parameters), and after that the parameters are frozen. The model doesn't know its knowledge has an edge — asked about something past the cutoff, it doesn't refuse, it extrapolates from the nearest thing it does know. That's what makes the trap quiet: code written against an old version of a library looks plausible, often compiles, and fails on the parts that changed.
 
 The fix is always the same: get current information into [context](#context). Load the changelog, point at the installed version's type definitions, or have the agent read the docs from the web. Anything in context outranks nothing-in-parameters.
+
+A cutoff is a routing fact, not a quality score. It tells you which claims need a current source before you rely on them; it does not say the model is generally weak or that every older fact is wrong.
 
 _Usage:_
 

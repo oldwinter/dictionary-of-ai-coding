@@ -8,6 +8,8 @@ Model 写下的都算。你读到的散文，它吐出的代码，[Tool call](./
 
 Output tokens 也决定一个 [Session](./Session.md) 的节奏。Model 读输入很快，但输出是一个 token 一个 token 生成的。一个 [Turn](./Turn.md) 感觉慢，几乎总是在写输出，不是在读输入。等很久，通常是因为一份很长的回答正在出来。
 
+要控制 output 的量，应该在 request 的边界上说清楚。让 agent 给 patch，不要重写整份文件；先给短诊断，再决定要不要实现；不需要展开 reasoning 时，就只要紧凑的结果。这些限制会减少成本和等待时间，又不会删掉下一步真正要用的信息。
+
 _用法：_
 
 「这次重构的 session 在烧额度，可输入并不大。」
