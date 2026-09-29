@@ -8,6 +8,8 @@ Knowledge cutoff 来自模型的造法。[Training](./Training.md) 把一份文�
 
 处理总是一样。把当前的信息放进 [Context](./Context.md)。载入 changelog，指向已安装版本的类型定义，或让 agent 从网上读文档。Context 里有的，都胜过 parameters 里没有的。
 
+Cutoff 是一条路由信息，不是质量分数。它告诉你，哪些说法在采用之前必须先找当前 source。它不表示 model 整体很弱，也不表示 cutoff 之前的事实全都不可靠。
+
 _用法：_
 
 「它一直在写 v3 SDK 的语法。我们用的是 v5。」

@@ -396,6 +396,8 @@ Model 写下的都算。你读到的散文，它吐出的代码，[Tool call](#t
 
 Output tokens 也决定一个 [Session](#session) 的节奏。Model 读输入很快，但输出是一个 token 一个 token 生成的。一个 [Turn](#turn) 感觉慢，几乎总是在写输出，不是在读输入。等很久，通常是因为一份很长的回答正在出来。
 
+要控制 output 的量，应该在 request 的边界上说清楚。让 agent 给 patch，不要重写整份文件；先给短诊断，再决定要不要实现；不需要展开 reasoning 时，就只要紧凑的结果。这些限制会减少成本和等待时间，又不会删掉下一步真正要用的信息。
+
 _用法：_
 
 「这次重构的 session 在烧额度，可输入并不大。」
@@ -863,6 +865,8 @@ _用法：_
 Knowledge cutoff 来自模型的造法。[Training](#training) 把一份文本快照写进模型的 [Parameters](#parameters)，之后 parameters 就冻住。模型不知道自己的知识有边界。问到 Knowledge cutoff 之后的东西，它不拒绝，它从自己确实知道的、最接近的东西往外推。所以这个陷阱不容易看出来。按库的旧版本写出的代码看着合理，常常能编译，改过的部分才失败。
 
 处理总是一样。把当前的信息放进 [Context](#context)。载入 changelog，指向已安装版本的类型定义，或让 agent 从网上读文档。Context 里有的，都胜过 parameters 里没有的。
+
+Cutoff 是一条路由信息，不是质量分数。它告诉你，哪些说法在采用之前必须先找当前 source。它不表示 model 整体很弱，也不表示 cutoff 之前的事实全都不可靠。
 
 _用法：_
 

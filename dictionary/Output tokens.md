@@ -8,6 +8,8 @@ Everything the model writes counts: the prose you read, the code it emits, [tool
 
 Output tokens also set the pace of a [session](./Session.md). The model reads input quickly but generates output one token at a time, so when a [turn](./Turn.md) feels slow, it's almost always the output being written, not the input being read. A long wait usually means a long answer is coming.
 
+Control output volume at the request boundary. Ask for a patch instead of a rewritten file, a short diagnosis before an implementation, or a compact result when the reasoning does not need to be shown. These constraints reduce cost and latency without removing information the next step actually needs.
+
 _Usage:_
 
 "The refactor session is burning through credit even though the inputs are small."

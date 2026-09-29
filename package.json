@@ -5,6 +5,10 @@
   "scripts": {
     "generate": "tsx internal/generate-readme.ts",
     "generate:zh": "tsx internal/generate-readme.ts --zh",
+    "typecheck": "tsc -p internal/tsconfig.json",
+    "test": "tsx --test internal/*.test.ts",
+    "check:readmes": "tsx internal/check-readmes.ts",
+    "check": "npm run typecheck && npm test && npm run check:readmes",
     "prepare": "husky"
   },
   "devDependencies": {

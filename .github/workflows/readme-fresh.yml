@@ -14,24 +14,6 @@ jobs:
         with:
           node-version: "22"
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
-      - name: Typecheck generator
-        run: npx tsc -p internal/tsconfig.json
-      - name: Regenerate README
-        run: npm run generate
-      - name: Fail if README.md is out of sync
-        run: |
-          if ! git diff --exit-code -- README.md; then
-            echo "README.md is out of sync with dictionary/, internal/Curriculum.md, or internal/README.template.md."
-            echo "Run: npm run generate && commit the result."
-            exit 1
-          fi
-      - name: Regenerate Chinese README
-        run: npm run generate:zh
-      - name: Fail if zh/README.md is out of sync
-        run: |
-          if ! git diff --exit-code -- zh/README.md; then
-            echo "zh/README.md is out of sync with zh/dictionary/, internal/Curriculum.zh.md, or internal/README.zh.template.md."
-            echo "Run: npm run generate:zh && commit the result."
-            exit 1
-          fi
+        run: npm ci --no-audit --no-fund
+      - name: Check generator and generated READMEs
+        run: npm run check

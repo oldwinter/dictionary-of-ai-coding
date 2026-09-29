@@ -8,6 +8,8 @@ The cutoff exists because of how models are made: [training](./Training.md) bake
 
 The fix is always the same: get current information into [context](./Context.md). Load the changelog, point at the installed version's type definitions, or have the agent read the docs from the web. Anything in context outranks nothing-in-parameters.
 
+A cutoff is a routing fact, not a quality score. It tells you which claims need a current source before you rely on them; it does not say the model is generally weak or that every older fact is wrong.
+
 _Usage:_
 
 "It keeps writing the v3 SDK syntax — we're on v5."
